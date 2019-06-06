@@ -56,10 +56,13 @@ GetVMState(void)
 {
     int i = 0;
 
-    struct VM *vm = calloc(1, sizeof(struct VM));
+    struct VM *vm;
+    struct CPU *cpu;
+
+    vm = calloc(1, sizeof(struct VM));
     MEMCHECK(vm);
 
-    struct CPU *cpu = calloc(1, sizeof(struct CPU));
+    cpu = calloc(1, sizeof(struct CPU));
     MEMCHECK(cpu);
 
     cpu->M_REG = CPU(M_REG);

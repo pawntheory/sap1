@@ -30,32 +30,32 @@ enum INSTRUCTIONS
    They are each a 1-bit value stored in the flags register.  */
 struct FLAGS
 {
-    unsigned char CF : 1;
-    unsigned char ZF : 1;
+    unsigned CF : 1;
+    unsigned ZF : 1;
 };
 
 /* The instruction register is an 8-bit register that holds the instructions
    in the upper 4 bits and the operands in the lower 4 bits.  */
 struct INS_REG
 {
-    unsigned char INS : 4;
-    unsigned char OPR : 4;
+    unsigned INS : 4;
+    unsigned OPR : 4;
 };
 
 struct CPU
 {
-    unsigned char M_REG : 4;
-    unsigned char P_CNT : 4;
-    unsigned char A_REG, B_REG, O_REG;
+    unsigned M_REG : 4;
+    unsigned P_CNT : 4;
+    unsigned A_REG, B_REG, O_REG;
     struct INS_REG I_REG;
     struct FLAGS F_REG;
-    unsigned short BUS : 9;
+    unsigned BUS : 9;
 };
 
 struct VM
 {
     struct CPU *cpu;
-    unsigned int ram[PROG];
+    unsigned ram[PROG];
 };
 
 void SetClock(int);
