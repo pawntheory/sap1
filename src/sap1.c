@@ -139,22 +139,22 @@ InitializeRAM(void)
 void
 SampleProgram(void)
 {
-    RAM[0x0] = ASM(LDA, 0xF);
-    RAM[0x1] = ASM(ADD, 0xE);
-    RAM[0x2] = ASM(STA, 0xF);
+    RAM[0x0] = ASM(LDI, 0x1);
+    RAM[0x1] = ASM(STA, 0xE);
+    RAM[0x2] = ASM(LDI, 0x0);
     RAM[0x3] = ASM(OUT, 0x0);
-    RAM[0x4] = ASM(JZ,  0x6);
-    RAM[0x5] = ASM(JMP, 0x0);
-    RAM[0x6] = ASM(HLT, 0x0);
-    RAM[0x7] = 0x00;
-    RAM[0x8] = 0x00;
-    RAM[0x9] = 0x00;
-    RAM[0xA] = 0x00;
-    RAM[0xB] = 0x00;
-    RAM[0xC] = 0x00;
+    RAM[0x4] = ASM(ADD, 0xE);
+    RAM[0x5] = ASM(STA, 0xF);
+    RAM[0x6] = ASM(LDA, 0xE);
+    RAM[0x7] = ASM(STA, 0xD);
+    RAM[0x8] = ASM(LDA, 0xF);
+    RAM[0x9] = ASM(STA, 0xE);
+    RAM[0xA] = ASM(LDA, 0xD);
+    RAM[0xB] = ASM(JC , 0x0);
+    RAM[0xC] = ASM(JMP, 0x3);
     RAM[0xD] = 0x00;
-    RAM[0xE] = 0x01;
-    RAM[0xF] = 0xFE;
+    RAM[0xE] = 0x00;
+    RAM[0xF] = 0x00;
 }
 
 /* Loads the program in the program array into the RAM variable.  If the
@@ -212,7 +212,7 @@ ExecuteProgram(void)
     WAIT(CLK);
 
     CPU(BUS) = RAM[CPU(M_REG)];
-    CPU(I_REG.INS) = CPU(BUS) >> 4;
+    CPU(I_REG.INS) = (CPU(BUS) >> 4) & 0xF;
     CPU(I_REG.OPR) = CPU(BUS) & 0xF;
     CPU(P_CNT)++;
 
@@ -326,7 +326,7 @@ ex_add(void)
 
     CPU(BUS) = CPU(A_REG) + CPU(B_REG);
     CPU(A_REG) = CPU(BUS) & 0xFF;
-    CPU(F_REG.CF) = CPU(BUS) >> 8;
+    CPU(F_REG.CF) = (CPU(BUS) >> 8) & 0x1;
     CPU(F_REG.ZF) = (CPU(A_REG) == 0);
 
     WAIT(CLK);
@@ -355,7 +355,7 @@ ex_sub(void)
 
     CPU(BUS) = CPU(A_REG) - CPU(B_REG);
     CPU(A_REG) = CPU(BUS) & 0xFF;
-    CPU(F_REG.CF) = CPU(BUS) >> 8;
+    CPU(F_REG.CF) = (CPU(BUS) >> 8) & 0x1;
     CPU(F_REG.ZF) = (CPU(A_REG) == 0);
 
     WAIT(CLK);
@@ -384,14 +384,14 @@ ex_sta(void)
     return 0;
 }
 
-/* The LDI instruction loads the contents of the instruction register into the
+/* The LDI instruction loads the operand of the instruction register into the
    A register.  This function returns a value of 0 if successful.  */
 static int
 ex_ldi(void)
 {
     int i = 0;
 
-    CPU(BUS) = (CPU(I_REG.INS) << 4) | CPU(I_REG.OPR);
+    CPU(BUS) = CPU(I_REG.OPR);
     CPU(A_REG) = CPU(BUS) & 0xFF;
 
     for (i = 0; i < 3; i++)

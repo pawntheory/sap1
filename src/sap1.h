@@ -8,7 +8,6 @@
 
 #include <stdio.h>
 
-
 #define MEMCHECK(A) if (!(A)) {\
     fprintf(stderr, "Memory Error.\n"); goto error; }
 
