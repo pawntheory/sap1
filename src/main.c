@@ -33,16 +33,14 @@ main(void)
     InitializeRAM();
     SampleProgram();
 
-    while (!run)
-        {
-            cpu = GetCPU();
+    while (!run) {
+        cpu = GetCPU();
 
-            fprintf(stdout, "%X\n", cpu.O_REG);
-            run = ExecuteProgram();
-        }
+        fprintf(stdout, "%X\n", cpu.O_REG);
+        run = ExecuteProgram();
+    }
 
-    if (run == -1)
-        return run;
+    if (run == -1) { return run; }
 
     return 0;
 }

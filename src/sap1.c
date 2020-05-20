@@ -36,8 +36,7 @@ static int ex_hlt(void);
 
 /* Sets the clock speed in milliseconds.  */
 void
-SetClock(milli)
-    int milli;
+SetClock(int milli)
 {
     CLK = milli;
 }
@@ -81,14 +80,14 @@ GetVMState(void)
 
     vm->cpu = cpu;
 
-    for (i = 0; i < PROG; i++)
+    for (i = 0; i < PROG; i++) {
         vm->ram[i] = RAM[i];
+    }
 
     return vm;
 
 error:
-    if (vm)
-        free(vm);
+    if (vm) { free(vm); }
 
     return NULL;
 }
@@ -96,11 +95,9 @@ error:
 /* Cleans up the VM by freeing all allocated memory.  This must be called to
    clean up memory after every time GetVMState is used.  */
 void
-CleanVM(vm)
-    struct VM *vm;
+CleanVM(struct VM *vm)
 {
-    if (vm->cpu)
-        free(vm->cpu);
+    if (vm->cpu) { free(vm->cpu); }
 
     free(vm);
 }
@@ -131,8 +128,9 @@ InitializeRAM(void)
 {
     int i = 0;
 
-    for (i = 0; i < PROG; i++)
+    for (i = 0; i < PROG; i++) {
         RAM[i] = 0;
+    }
 }
 
 /* Builds a sample program for CPU execution.  */
@@ -162,19 +160,16 @@ SampleProgram(void)
    length (PROG), then only the maximum amount of commands are added to the
    RAM variable.  */
 void
-LoadProgram(program, length)
-    unsigned char program[];
-    int length;
+LoadProgram(unsigned char program[], int length)
 {
     int max = 0, i = 0;
 
-    if (length < PROG)
-        max = length;
-    else
-        max = PROG;
+    if (length < PROG) { max = length; }
+    else { max = PROG; }
 
-    for (i = 0; i < max; i++)
+    for (i = 0; i < max; i++) {
         RAM[i] = program[i];
+    }
 }
 
 /* Saves the program in the RAM variable to the program array.  If the
@@ -182,19 +177,16 @@ LoadProgram(program, length)
    length (PROG), then only the maximum amount of commands are added to the
    program array.  */
 void
-SaveProgram(program, length)
-    unsigned char program[];
-    int length;
+SaveProgram(unsigned char program[], int length)
 {
     int max = 0, i = 0;
 
-    if (length < PROG)
-        max = length;
-    else
-        max = PROG;
+    if (length < PROG) { max = length; }
+    else { max = PROG; }
 
-    for (i = 0; i < max; i++)
+    for (i = 0; i < max; i++) {
         program[i] = RAM[i];
+    }
 }
 
 /* Executes the program that is currently resident in the RAM variable.  This
@@ -218,46 +210,24 @@ ExecuteProgram(void)
 
     WAIT(CLK);
 
-    if (CPU(I_REG.INS) == NOP)
-        return ex_nop();
-
-    if (CPU(I_REG.INS) == LDA)
-        return ex_lda();
-
-    if (CPU(I_REG.INS) == ADD)
-        return ex_add();
-
-    if (CPU(I_REG.INS) == SUB)
-        return ex_sub();
-
-    if (CPU(I_REG.INS) == STA)
-        return ex_sta();
-
-    if (CPU(I_REG.INS) == LDI)
-        return ex_ldi();
-
-    if (CPU(I_REG.INS) == JMP)
-        return ex_jmp();
-
-    if (CPU(I_REG.INS) == JC)
-        return ex_jc();
-
-    if (CPU(I_REG.INS) == JZ)
-        return ex_jz();
-
-    if (CPU(I_REG.INS) == OUT)
-        return ex_out();
-
-    if (CPU(I_REG.INS) == HLT)
-        return ex_hlt();
+    if (CPU(I_REG.INS) == NOP) { return ex_nop(); }
+    if (CPU(I_REG.INS) == LDA) { return ex_lda(); }
+    if (CPU(I_REG.INS) == ADD) { return ex_add(); }
+    if (CPU(I_REG.INS) == SUB) { return ex_sub(); }
+    if (CPU(I_REG.INS) == STA) { return ex_sta(); }
+    if (CPU(I_REG.INS) == LDI) { return ex_ldi(); }
+    if (CPU(I_REG.INS) == JMP) { return ex_jmp(); }
+    if (CPU(I_REG.INS) == JC) { return ex_jc(); }
+    if (CPU(I_REG.INS) == JZ) { return ex_jz(); }
+    if (CPU(I_REG.INS) == OUT) { return ex_out(); }
+    if (CPU(I_REG.INS) == HLT) { return ex_hlt(); }
 
     return -1;
 }
 
 /* Simple delay function that waits the given amount of milliseconds.  */
 static void
-cpu_wait(milli)
-    int milli;
+cpu_wait(int milli)
 {
     long int pause;
     clock_t delay;
@@ -265,8 +235,7 @@ cpu_wait(milli)
     pause = milli * (CLOCKS_PER_SEC / 1000);
     delay = clock();
 
-    while (clock() - delay < pause)
-        ;
+    while (clock() - delay < pause) { }
 }
 
 /* The NOP instruction does nothing for the remainder of the current CPU
@@ -278,8 +247,9 @@ ex_nop(void)
 {
     int i = 0;
 
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < 3; i++) {
         WAIT(CLK);
+    }
 
     return 0;
 }
@@ -299,8 +269,9 @@ ex_lda(void)
     CPU(BUS) = RAM[CPU(M_REG)];
     CPU(A_REG) = CPU(BUS) & 0xFF;
 
-    for (i = 0; i < 2; i++)
+    for (i = 0; i < 2; i++) {
         WAIT(CLK);
+    }
 
     return 0;
 }
@@ -378,8 +349,9 @@ ex_sta(void)
     CPU(BUS) = CPU(A_REG);
     RAM[CPU(M_REG)] = CPU(BUS) & 0xFF;
 
-    for (i = 0; i < 2; i++)
+    for (i = 0; i < 2; i++) {
         WAIT(CLK);
+    }
 
     return 0;
 }
@@ -394,8 +366,9 @@ ex_ldi(void)
     CPU(BUS) = CPU(I_REG.OPR);
     CPU(A_REG) = CPU(BUS) & 0xFF;
 
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < 3; i++) {
         WAIT(CLK);
+    }
 
     return 0;
 }
@@ -411,8 +384,9 @@ ex_jmp(void)
     CPU(BUS) = (CPU(I_REG.INS) << 4) | CPU(I_REG.OPR);
     CPU(P_CNT) = CPU(BUS) & 0xF;
 
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < 3; i++) {
         WAIT(CLK);
+    }
 
     return 0;
 }
@@ -425,15 +399,15 @@ ex_jc(void)
 {
     int i = 0;
 
-    if (CPU(F_REG.CF))
-        {
-            CPU(BUS) = (CPU(I_REG.INS) << 4) | CPU(I_REG.OPR);
-            CPU(P_CNT) = CPU(BUS) & 0xF;
-            CPU(F_REG.CF) = 0;
-        }
+    if (CPU(F_REG.CF)) {
+        CPU(BUS) = (CPU(I_REG.INS) << 4) | CPU(I_REG.OPR);
+        CPU(P_CNT) = CPU(BUS) & 0xF;
+        CPU(F_REG.CF) = 0;
+    }
 
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < 3; i++) {
         WAIT(CLK);
+    }
 
     return 0;
 }
@@ -446,15 +420,15 @@ ex_jz(void)
 {
     int i = 0;
 
-    if (CPU(F_REG.ZF))
-        {
-            CPU(BUS) = (CPU(I_REG.INS) << 4) | CPU(I_REG.OPR);
-            CPU(P_CNT) = CPU(BUS) & 0xF;
-            CPU(F_REG.ZF) = 0;
-        }
+    if (CPU(F_REG.ZF)) {
+        CPU(BUS) = (CPU(I_REG.INS) << 4) | CPU(I_REG.OPR);
+        CPU(P_CNT) = CPU(BUS) & 0xF;
+        CPU(F_REG.ZF) = 0;
+    }
 
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < 3; i++) {
         WAIT(CLK);
+    }
 
     return 0;
 }
@@ -470,8 +444,9 @@ ex_out(void)
     CPU(BUS) = CPU(A_REG);
     CPU(O_REG) = CPU(BUS) & 0xFF;
 
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < 3; i++) {
         WAIT(CLK);
+    }
 
     return 0;
 }
@@ -484,8 +459,9 @@ ex_hlt(void)
 {
     int i = 0;
 
-    for (i = 0; i < 3; i++)
+    for (i = 0; i < 3; i++) {
         WAIT(CLK);
+    }
 
     return 1;
 }

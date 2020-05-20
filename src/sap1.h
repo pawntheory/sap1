@@ -57,15 +57,15 @@ struct VM
     unsigned ram[PROG];
 };
 
-void SetClock(int);
-void InitializeCPU(void);
+void SetClock(int milli);
 struct CPU GetCPU(void);
 struct VM *GetVMState(void);
-void CleanVM(struct VM *);
+void CleanVM(struct VM *vm);
+void InitializeCPU(void);
 void InitializeRAM(void);
 void SampleProgram(void);
-void LoadProgram(unsigned char[], int);
-void SaveProgram(unsigned char[], int);
+void LoadProgram(unsigned char program[], int length);
+void SaveProgram(unsigned char program[], int length);
 int ExecuteProgram(void);
 
 #endif /* DCP_SAP_H */
